@@ -1,0 +1,15 @@
+diff --git a/services/catalog/tests/shifts.test.ts b/services/catalog/tests/shifts.test.ts
+index 8a89e14..de58a7c 100644
+--- a/services/catalog/tests/shifts.test.ts
++++ b/services/catalog/tests/shifts.test.ts
+@@ -19,6 +19,10 @@ describe("isActiveOn", () => {
+   it("no cubre un día anterior al turno", () => {
+     expect(isActiveOn(shift, "2026-09-30")).toBe(false);
+   });
++
++  it("cubre el último día del turno", () => {
++    expect(isActiveOn(shift, "2026-10-31")).toBe(true);
++  });
+ });
+ 
+ describe("currentShift", () => {
