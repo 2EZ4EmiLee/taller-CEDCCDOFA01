@@ -1,0 +1,13 @@
+diff --git a/services/catalog/src/shifts.ts b/services/catalog/src/shifts.ts
+index 0986459..81d8658 100644
+--- a/services/catalog/src/shifts.ts
++++ b/services/catalog/src/shifts.ts
+@@ -5,7 +5,7 @@ import type { Shift } from "./domain.js";
+  * comparar como texto porque el orden lexicográfico coincide con el cronológico.
+  */
+ export function isActiveOn(shift: Shift, day: string): boolean {
+-  return shift.start_date <= day && day < shift.end_date;
++  return shift.start_date <= day && day <= shift.end_date;
+ }
+ 
+ /** El turno vigente en `day`; si hay más de uno, el que se registró primero. */

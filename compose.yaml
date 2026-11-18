@@ -99,6 +99,14 @@ services:
       notifications:
         condition: service_started
 
+  # Terminal de herramientas: docker compose run --rm tools
+  tools:
+    build: ./tools
+    profiles: [tools]
+    working_dir: /work
+    volumes:
+      - .:/work
+
 volumes:
   incidents-data:
   catalog-data:
