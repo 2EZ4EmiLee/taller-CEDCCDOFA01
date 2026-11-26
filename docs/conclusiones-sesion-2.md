@@ -2,6 +2,7 @@ PARTE I
 
 5- Herramientas. Corre las pruebas de los tres servicios. Anota cuántas pruebas pasan, cuántas fallan en cada servicio y cuánto tarda:
 
+```text
 $ make test
 
 root@5c012845aaf9:/work# make test
@@ -58,8 +59,11 @@ cd services/notifications && go test ./...
 
 ok      github.com/lnds/pager/services/notifications    0.041s
 
+```
+
 6- Herramientas. Mide cuántos cambios al código detectan las pruebas de hoy. El script modifica el archivo de a un cambio por vez (por ejemplo, un < por <=), corre las pruebas y deja todo como estaba. Anota cuántos mutantes salen MUERTO y cuántos SOBREVIVE:
 
+```text
 $ tarea/mutar.sh services/catalog/src/shifts.ts
 
 root@5c012845aaf9:/work# tarea/mutar.sh services/catalog/src/shifts.ts
@@ -125,8 +129,11 @@ All files             |   65.74 |       50 |    62.5 |   66.14 |
  shifts.ts            |      80 |      100 |      80 |      80 | 15                 
 ----------------------|---------|----------|---------|---------|--------------------
 
+```
+
 7- Herramientas. Mide la cobertura de catalog. Busca la fila de shifts.ts y anota su porcentaje y las líneas que quedan sin cubrir:
 
+```text
 $ cd /work/services/catalog && npm run coverage
 
 root@5c012845aaf9:/work# cd /work/services/catalog && npm run coverage
@@ -184,10 +191,13 @@ All files             |   65.74 |       50 |    62.5 |   66.14 |
  shifts.ts            |      80 |      100 |      80 |      80 | 15                 
 ----------------------|---------|----------|---------|---------|--------------------
 
+```
+
 PARTE 2
 
 1 y 2- Repite la medición de mutantes de la Parte 0, ahora con los dos cambios integrados. Anota cuántos mutantes mueren y cuántos sobreviven, y compara con la Parte 0:
 
+```text
 $ cd /work && tarea/mutar.sh services/catalog/src/shifts.ts
 
 root@402bf4717258:/work# cd /work && tarea/mutar.sh services/catalog/src/shifts.ts
@@ -252,8 +262,11 @@ All files             |   65.74 |       50 |    62.5 |   66.14 |
  shifts.ts            |      80 |      100 |      80 |      80 | 15                                            
 ----------------------|---------|----------|---------|---------|-----------------------------------------------
 
+```
+
 3- Mide la cobertura de los otros dos servicios. Anota el total de cada uno:
 
+```text
 $ cd /work/services/incidents && uv run pytest --cov=incidents
 $ cd /work/services/notifications && go test -cover ./...
 
@@ -284,8 +297,11 @@ TOTAL                           925    215    77%
 root@402bf4717258:/work/services/incidents# cd /work/services/notifications && go test -cover ./...
 ok      github.com/lnds/pager/services/notifications    0.060s  coverage: 70.3% of statements
 
+```
+
 PARTE 3
 
+```text
 $ km score
 Code Health Score
 ──────────────────────────────────────────────────────────────────
@@ -361,21 +377,27 @@ Infrastructure smells — security smells of infrastructure code
  14 smells in 2 of 6 files: hard-coded secret 5, unpinned 9
 
 
+```
+
 PARTE 4
 
 1- Dependencias de catalog. Anota cuántas vulnerabilidades hay en total y cuántas quedan al dejar fuera las dependencias de desarrollo, y cuáles son altas:
 
+```text
 $ cd /work/services/catalog && npm audit
 $ npm audit --omit=dev
 
 # npm audit report
 4 vulnerabilities (2 moderate, 2 high)
+```
+
 - Total: 4 vulnerabilidades (2 moderate: @hono/node-server, hono; 2 high: vite, zod).
 - Sin dependencias de desarrollo (--omit=dev): 3 vulnerabilidades (2 moderate: @hono/node-server, hono; 1 high: zod <4.6.6).
 - Altas: vite (solo dev) y zod <4.6.6 (producción).
 
 2- Dependencias de incidents:
 
+```text
 $ cd /work/services/incidents
 $ uv export --frozen --no-dev --no-hashes --no-emit-project -o /tmp/req.txt
 $ pip-audit -r /tmp/req.txt --no-deps --disable-pip
@@ -388,21 +410,29 @@ certifi           2026.7.22 PYSEC-2026-4320 2026.10.18
 opentelemetry-api 1.45.0    CVE-2026-114603 1.45.1
 opentelemetry-api 1.45.0    CVE-2026-126360 1.45.2
 
+```
+
 3- Dependencias de notifications. Fíjate en las líneas Found in y Fixed in:
 
+```text
 $ cd /work/services/notifications && govulncheck ./...
 
 Your code is affected by 37 vulnerabilities from the Go standard library.
+```
+
 - Found in: net/http@go1.23.12, crypto/tls@go1.23.12, crypto/x509@go1.23.12, net/url@go1.23.12, net/textproto@go1.23.12, encoding/asn1@go1.23.12, encoding/pem@go1.23.12, net@go1.23.12
 - Fixed in: go1.24.8 hasta go1.26.11
 
 4- Secretos en el historial de git. Mira en qué archivos están:
 
+```text
 $ cd /work && gitleaks detect --redact -v
 
 12:44AM INF 8 commits scanned.
 12:44AM INF scanned ~466872 bytes (466.87 KB) in 438ms
 12:44AM WRN leaks found: 7
+```
+
 - tarea/03-secreto.patch (línea 9: CATALOG_API_KEY)
 - services/incidents/src/incidents/config.py (línea 10: NOTIFICATIONS_API_KEY)
 - compose.yaml (líneas 57 y 83: NOTIFICATIONS_API_KEY)
@@ -422,6 +452,7 @@ $ cd /work && gitleaks detect --redact -v
 
 6- Corrige la vulnerabilidad alta de catalog y comprueba. Anota cuántas vulnerabilidades quedan y si las pruebas siguen pasando:
 
+```text
 $ cd /work/services/catalog && npm install --save-exact zod@4.6.7
 $ npm audit --omit=dev
 $ npm test
@@ -509,8 +540,11 @@ shift 1 created for checkout: Ana Soto <ana@example.com>
    Duration  603ms (transform 43%, import 30%, tests 25%, worker 2%)
 
 
+```
+
 7- Corrige las de incidents y comprueba. Repite los dos comandos del paso 2, y anota qué dicen ahora y si las pruebas siguen pasando:
 
+```text
 $ cd /work/services/incidents
 $ uv lock --upgrade-package certifi --upgrade-package opentelemetry-api
 $ uv export --frozen --no-dev --no-hashes --no-emit-project -o /tmp/req.txt
@@ -607,8 +641,11 @@ root@c5456af5cb41:/work/services/incidents# uv run pytest
 ..................................................................................                                                        [100%]
 82 passed in 3.15s
 
+```
+
 8- Tu terminal. Sube las correcciones y espera el CI:
 
+```text
 $ git commit -am "fix(deps): actualiza zod, certifi y opentelemetry-api"
 $ git push
 
@@ -642,10 +679,13 @@ Date:   Wed Nov 18 16:53:25 2026 -0800
  2 files changed, 5 insertions(+), 5 deletions(-)
 
 
+```
+
  PARTE 5
 
 1- Tu terminal. Copia el workflow a su lugar y súbelo:
 
+```text
 $ cp tarea/gate-calidad.yml .github/workflows/gate-calidad.yml
 $ git add .github/workflows/gate-calidad.yml
 $ git commit -m "ci: agrega el gate de calidad"
@@ -655,6 +695,8 @@ $ git push
  1 file changed, 104 insertions(+)
 To https://github.com/2EZ4EmiLee/taller-CEDCCDOFA01.git
    b1ed374..7053875  tarea-2 -> tarea-2
+
+```
 
 2- En el pull request, mira los jobs nuevos calidad-y-seguridad y construye-imagenes. Anota su color:
 
@@ -679,6 +721,7 @@ To https://github.com/2EZ4EmiLee/taller-CEDCCDOFA01.git
 
 5- Tu terminal. Crea otra rama, aplica el secreto de prueba y súbela:
 
+```text
 $ git switch -c prueba-gate
 $ git apply tarea/03-secreto.patch
 $ git diff
@@ -720,6 +763,8 @@ To https://github.com/2EZ4EmiLee/taller-CEDCCDOFA01.git
  * [new branch]      prueba-gate -> prueba-gate
 branch 'prueba-gate' set up to track 'origin/prueba-gate'.
 
+```
+
 6- Abre un segundo pull request de prueba-gate hacia main en tu fork y mira qué pasa. Anota el color del job calidad-y-seguridad, qué paso falla y cuántos secretos reporta:
 
 - Color del job calidad-y-seguridad: Rojo (failed in 19s); construye-imagenes quedó en verde.
@@ -729,6 +774,7 @@ branch 'prueba-gate' set up to track 'origin/prueba-gate'.
 
 7- Quita el secreto de prueba para que el pull request quede limpio:
 
+```text
 $ git apply -R tarea/03-secreto.patch
 $ git commit -am "revierte el secreto de prueba"
 $ git push
@@ -748,10 +794,13 @@ remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
 To https://github.com/2EZ4EmiLee/taller-CEDCCDOFA01.git
    0e8011d..29adc9f  prueba-gate -> prueba-gate
 
+```
+
 8- Cierra el segundo pull request en GitHub sin hacer merge y vuelve a tu rama:
 
+```text
 $ git switch tarea-2
 
 emile@root:/opt/curso-devops/taller-CEDCCDOFA01$ git switch tarea-2
 Switched to branch 'tarea-2'
-Your branch is up to date with 'origin/tarea-2'.
+Your branch is up to date with 'origin/tarea-2'.```
